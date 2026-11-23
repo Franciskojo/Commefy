@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { getQuoteAction, submitCheckoutAction } from "./actions";
-import { ShieldCheck, Lock, AlertCircle, ArrowLeft, ShoppingBag } from "lucide-react";
+import { ShieldCheck, Lock, AlertCircle, ArrowLeft, ShoppingBag, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 interface ShippingZone {
@@ -48,6 +48,7 @@ export function CheckoutClient({
   const [phone, setPhone] = useState("");
   const [shippingMethodId, setShippingMethodId] = useState("standard");
   const [discountCode, setDiscountCode] = useState("");
+  const [showMobileSummary, setShowMobileSummary] = useState(false);
 
   const [quote, setQuote] = useState<any>(null);
   const [isLoadingQuote, setIsLoadingQuote] = useState(false);
@@ -195,6 +196,80 @@ export function CheckoutClient({
         </div>
       )}
 
+      {/* Mobile Collapsible Order Summary Bar */}
+      <div className="lg:hidden mb-6 border border-slate-200 rounded-2xl bg-slate-50/80 overflow-hidden shadow-xs">
+        <button
+          type="button"
+          onClick={() => setShowMobileSummary(!showMobileSummary)}
+          className="w-full px-4 py-3.5 flex items-center justify-between text-left focus:outline-none"
+        >
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <ShoppingBag className="w-4 h-4 text-indigo-600" />
+            <span>{showMobileSummary ? "Hide order summary" : "Show order summary"}</span>
+            <ChevronDown
+              className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                showMobileSummary ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+          <span className="text-base font-extrabold text-slate-900">
+            {formatMoney(quote?.total || items.reduce((s, i) => s + i.price * i.quantity, 0), currency)}
+          </span>
+        </button>
+
+        {showMobileSummary && (
+          <div className="p-4 border-t border-slate-200/80 space-y-4 bg-white animate-in slide-in-from-top-1">
+            <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
+              {items.map((item) => (
+                <div key={item.variantId} className="flex items-center justify-between gap-3 text-sm">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-slate-100 shrink-0 overflow-hidden flex items-center justify-center">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <ShoppingBag className="w-4 h-4 text-slate-400" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-slate-900 truncate text-xs">{item.name}</p>
+                      <p className="text-[11px] text-slate-500">Qty: {item.quantity}</p>
+                    </div>
+                  </div>
+                  <span className="font-bold text-slate-900 shrink-0 text-xs">
+                    {formatMoney(item.price * item.quantity, currency)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span className="font-semibold text-slate-900">
+                  {formatMoney(quote?.subtotal || items.reduce((s, i) => s + i.price * i.quantity, 0), currency)}
+                </span>
+              </div>
+              {quote?.discountTotal > 0 && (
+                <div className="flex justify-between text-emerald-600">
+                  <span>Discount</span>
+                  <span>-{formatMoney(quote.discountTotal, currency)}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span>Shipping</span>
+                <span>{quote?.shippingTotal === 0 ? "FREE" : formatMoney(quote?.shippingTotal || 0, currency)}</span>
+              </div>
+              {quote?.taxTotal > 0 && (
+                <div className="flex justify-between">
+                  <span>Estimated Tax</span>
+                  <span>{formatMoney(quote.taxTotal, currency)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left: Shipping & Details */}
         <div className="lg:col-span-7 space-y-8">
@@ -243,7 +318,7 @@ export function CheckoutClient({
                 onChange={(e) => setLine1(e.target.value)}
                 placeholder="123 Main Street, Apt 4B"
               />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   label="City *"
                   required
@@ -258,7 +333,7 @@ export function CheckoutClient({
                   placeholder="NY"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   label="Postal Code *"
                   required
