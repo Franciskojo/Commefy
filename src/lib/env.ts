@@ -23,18 +23,46 @@ const base64Key32 = z
     }
   }, "must be a base64-encoded 32-byte key (openssl rand -base64 32)");
 
+function cleanDomain(val?: string): string {
+  let s = (val || "").trim();
+  s = s.replace(/^["']+|["']+$/g, "").trim();
+  if (s.includes("://")) {
+    try {
+      return new URL(s).host.toLowerCase();
+    } catch {
+      // ignore
+    }
+  }
+  s = s.replace(/^https?:\/\//i, "").replace(/\/.*$/, "").trim().toLowerCase();
+  return s;
+}
+
 const schema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     APP_ENV: z.enum(["development", "test", "staging", "production"]).default("development"),
     APP_URL: z
       .string()
-      .transform((val) => (val.startsWith("http://") || val.startsWith("https://") ? val : `https://${val}`))
+      .optional()
+      .transform((val) => {
+        if (!val || !val.trim()) {
+          const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+          return vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000";
+        }
+        const s = val.trim().replace(/^["']+|["']+$/g, "").trim();
+        return s.startsWith("http://") || s.startsWith("https://") ? s : `https://${s}`;
+      })
       .pipe(z.url()),
     PLATFORM_ROOT_DOMAIN: z
       .string()
-      .min(3)
-      .transform((val) => val.replace(/^https?:\/\//i, "").replace(/\/+$/, "").toLowerCase())
+      .optional()
+      .transform((val) => {
+        if (!val || !val.trim()) {
+          const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+          return vercelUrl ? cleanDomain(vercelUrl) : "localhost:3000";
+        }
+        return cleanDomain(val);
+      })
       .pipe(z.string().regex(/^[a-z0-9.-]+(:\d{2,5})?$/, "lowercase host[:port] without scheme")),
     MONGODB_URI: z.string().regex(/^mongodb(\+srv)?:\/\//, "must be a MongoDB connection string"),
     MONGODB_DB: z.string().min(1).default("storeforge"),
