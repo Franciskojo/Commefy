@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 160" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Background squircle gradient -->
+    <linearGradient id="logoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B0F19" />
+      <stop offset="100%" stop-color="#1E1B4B" />
+    </linearGradient>
+
+    <!-- Main dynamic C gradient -->
+    <linearGradient id="logoCGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+
+    <!-- Text gradient for -fy accent -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#C084FC" />
+    </linearGradient>
+
+    <linearGradient id="logoAccentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="logoGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#6366F1" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Left: Icon Mark -->
+  <g transform="translate(16, 16)">
+    <!-- Squircle base -->
+    <rect x="0" y="0" width="128" height="128" rx="36" fill="url(#logoBgGrad)" stroke="#312E81" stroke-width="2.5" />
+
+    <g filter="url(#logoGlow)" transform="translate(4, 4) scale(0.234)">
+      <!-- Bag Handle Arc forming top of C -->
+      <path
+        d="M256 124 C192 124 146 172 146 236 C146 256 154 274 168 288"
+        stroke="url(#logoAccentGrad)"
+        stroke-width="36"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+
+      <!-- Main Dynamic Bold "C" Body -->
+      <path
+        d="M352 186 C326 152 284 134 238 134 C162 134 108 190 108 266 C108 342 162 398 238 398 C294 398 340 370 366 326"
+        stroke="url(#logoCGrad)"
+        stroke-width="44"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+
+      <!-- Bag Pocket / Speed Tag Fold Accent -->
+      <path
+        d="M260 210 L346 210 C358 210 368 220 368 232 L368 300 C368 312 358 322 346 322 L260 322 C248 322 238 312 238 300 L238 232 C238 220 248 210 260 210 Z"
+        fill="#1E1B4B"
+        stroke="url(#logoCGrad)"
+        stroke-width="12"
+        stroke-linejoin="round"
+      />
+
+      <!-- Shopping Tag Diamond Core -->
+      <circle cx="303" cy="266" r="14" fill="#06B6D4" />
+    </g>
+  </g>
+
+  <!-- Right: Logotype Typography -->
+  <g transform="translate(170, 92)">
+    <!-- Main wordmark "Comme" in clean white -->
+    <text
+      x="0"
+      y="0"
+      font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif"
+      font-weight="900"
+      font-size="64"
+      letter-spacing="-1.5"
+      fill="#FFFFFF"
+    >Comme<tspan fill="url(#textGrad)">fy</tspan></text>
+
+    <!-- Subtitle badge -->
+    <text
+      x="4"
+      y="32"
+      font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+      font-weight="700"
+      font-size="13"
+      letter-spacing="4"
+      fill="#818CF8"
+    >ENTERPRISE MULTI-TENANT COMMERCE</text>
+  </g>
+</svg>

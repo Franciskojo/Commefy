@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Dark Background with Subtle Tech Grid -->
+    <linearGradient id="bannerBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050814" />
+      <stop offset="50%" stop-color="#0B0F19" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+
+    <!-- Glowing Orb Gradients -->
+    <radialGradient id="indigoGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="pinkGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EC4899" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#EC4899" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="bannerCGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+
+    <linearGradient id="bannerAccentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+
+    <linearGradient id="bannerTextGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#C084FC" />
+    </linearGradient>
+
+    <!-- Card Background -->
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.8" />
+    </linearGradient>
+
+    <filter id="bigGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="30" flood-color="#6366F1" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1280" height="640" fill="url(#bannerBg)" />
+
+  <!-- Grid Pattern Overlay -->
+  <g opacity="0.08">
+    <path d="M0 80 H1280 M0 160 H1280 M0 240 H1280 M0 320 H1280 M0 400 H1280 M0 480 H1280 M0 560 H1280" stroke="#FFFFFF" stroke-width="1" />
+    <path d="M160 0 V640 M320 0 V640 M480 0 V640 M640 0 V640 M800 0 V640 M960 0 V640 M1120 0 V640" stroke="#FFFFFF" stroke-width="1" />
+  </g>
+
+  <!-- Ambient Light Orbs -->
+  <circle cx="640" cy="220" r="320" fill="url(#indigoGlow)" />
+  <circle cx="820" cy="300" r="260" fill="url(#pinkGlow)" />
+
+  <!-- Center Content Container -->
+  <g transform="translate(640, 260)" text-anchor="middle">
+    <!-- Icon Mark Container -->
+    <g transform="translate(-80, -180)">
+      <rect x="0" y="0" width="160" height="160" rx="44" fill="url(#cardBg)" stroke="#4338CA" stroke-width="3" filter="url(#bigGlow)" />
+
+      <!-- Mark Inside -->
+      <g transform="translate(10, 10) scale(0.273)">
+        <path
+          d="M256 124 C192 124 146 172 146 236 C146 256 154 274 168 288"
+          stroke="url(#bannerAccentGrad)"
+          stroke-width="38"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+        <path
+          d="M352 186 C326 152 284 134 238 134 C162 134 108 190 108 266 C108 342 162 398 238 398 C294 398 340 370 366 326"
+          stroke="url(#bannerCGrad)"
+          stroke-width="46"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+        <path
+          d="M260 210 L346 210 C358 210 368 220 368 232 L368 300 C368 312 358 322 346 322 L260 322 C248 322 238 312 238 300 L238 232 C238 220 248 210 260 210 Z"
+          fill="#1E1B4B"
+          stroke="url(#bannerCGrad)"
+          stroke-width="12"
+          stroke-linejoin="round"
+        />
+        <circle cx="303" cy="266" r="14" fill="#06B6D4" />
+      </g>
+    </g>
+
+    <!-- Main Title -->
+    <text
+      y="50"
+      font-family="system-ui, -apple-system, sans-serif"
+      font-weight="900"
+      font-size="76"
+      letter-spacing="-2"
+      fill="#FFFFFF"
+    >Comme<tspan fill="url(#bannerTextGrad)">fy</tspan></text>
+
+    <!-- Subtitle -->
+    <text
+      y="100"
+      font-family="system-ui, -apple-system, sans-serif"
+      font-weight="500"
+      font-size="22"
+      letter-spacing="0.5"
+      fill="#94A3B8"
+    >The Sovereign Multi-Tenant Commerce SaaS Engine</text>
+
+    <!-- Feature Pill Badges -->
+    <g transform="translate(0, 160)">
+      <!-- Pill 1: Next.js 16 -->
+      <g transform="translate(-360, 0)">
+        <rect x="0" y="0" width="165" height="38" rx="19" fill="#1E293B" stroke="#334155" stroke-width="1" />
+        <text x="82" y="24" font-family="system-ui, sans-serif" font-weight="600" font-size="13" fill="#E2E8F0">Next.js 16 • React 19</text>
+      </g>
+
+      <!-- Pill 2: Strict Multi-Tenant -->
+      <g transform="translate(-175, 0)">
+        <rect x="0" y="0" width="165" height="38" rx="19" fill="#1E293B" stroke="#334155" stroke-width="1" />
+        <text x="82" y="24" font-family="system-ui, sans-serif" font-weight="600" font-size="13" fill="#E2E8F0">Tenant Scoping</text>
+      </g>
+
+      <!-- Pill 3: Atomic Inventory -->
+      <g transform="translate(10, 0)">
+        <rect x="0" y="0" width="165" height="38" rx="19" fill="#1E293B" stroke="#334155" stroke-width="1" />
+        <text x="82" y="24" font-family="system-ui, sans-serif" font-weight="600" font-size="13" fill="#E2E8F0">Atomic Inventory</text>
+      </g>
+
+      <!-- Pill 4: Stripe & Paystack -->
+      <g transform="translate(195, 0)">
+        <rect x="0" y="0" width="165" height="38" rx="19" fill="#1E293B" stroke="#334155" stroke-width="1" />
+        <text x="82" y="24" font-family="system-ui, sans-serif" font-weight="600" font-size="13" fill="#E2E8F0">Stripe &amp; Paystack</text>
+      </g>
+    </g>
+  </g>
+</svg>
