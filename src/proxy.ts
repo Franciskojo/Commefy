@@ -3,7 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 export function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   const host = request.headers.get("host") || "";
-  const rootDomain = process.env.PLATFORM_ROOT_DOMAIN || "localhost:3000";
+  
+  // Resolve platform root domain (fall back to Vercel auto-injected URLs or localhost)
+  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  const rootDomain = process.env.PLATFORM_ROOT_DOMAIN || vercelUrl || "localhost:3000";
 
   const requestId = request.headers.get("x-request-id") || crypto.randomUUID();
 
@@ -18,19 +21,30 @@ export function proxy(request: NextRequest) {
   requestHeaders.delete("x-sf-platform-role");
   requestHeaders.delete("x-sf-tenant-role");
 
-  // Determine if host is a tenant subdomain
   const hostNoPort = host.split(":")[0].toLowerCase();
   const rootNoPort = rootDomain.split(":")[0].toLowerCase();
 
-  let response: NextResponse;
+  // Any vercel.app domain (production or preview deployments) or localhost is the platform root
+  const isRootPlatformHost =
+    hostNoPort === rootNoPort ||
+    hostNoPort === "localhost" ||
+    hostNoPort === "127.0.0.1" ||
+    hostNoPort.endsWith(".vercel.app");
 
-  // Static assets, api routes, and Next internal routes don't rewrite
-  const isInternal =
+  // Reserved application paths that must NEVER be rewritten
+  const isReservedPath =
     url.pathname.startsWith("/_next") ||
     url.pathname.startsWith("/api") ||
+    url.pathname.startsWith("/admin") ||
+    url.pathname.startsWith("/platform") ||
+    url.pathname.startsWith("/auth") ||
+    url.pathname.startsWith("/store") ||
     url.pathname.includes(".");
 
-  if (!isInternal && hostNoPort !== rootNoPort && hostNoPort !== "localhost" && hostNoPort !== "127.0.0.1") {
+  let response: NextResponse;
+
+  // Only rewrite if it's NOT a reserved path and NOT the root platform domain
+  if (!isReservedPath && !isRootPlatformHost) {
     if (hostNoPort.endsWith(`.${rootNoPort}`)) {
       const subdomain = hostNoPort.slice(0, hostNoPort.length - rootNoPort.length - 1);
       if (subdomain && !subdomain.includes(".")) {

@@ -16,16 +16,20 @@ export function classifyHost(rawHost: string): HostClassification {
   // Strip port from host for domain comparison unless root domain has a port
   const host = rawHost.toLowerCase().trim();
   const rootDomain = env.PLATFORM_ROOT_DOMAIN.toLowerCase().trim();
+  const hostNoPort = host.split(":")[0];
+  const rootNoPort = rootDomain.split(":")[0];
 
-  if (host === rootDomain || host === "localhost" || host === "127.0.0.1") {
+  if (
+    host === rootDomain ||
+    hostNoPort === rootNoPort ||
+    hostNoPort === "localhost" ||
+    hostNoPort === "127.0.0.1" ||
+    hostNoPort.endsWith(".vercel.app")
+  ) {
     return { type: "platform", host };
   }
 
   // Check if it's a subdomain of PLATFORM_ROOT_DOMAIN
-  // Handle both with and without port
-  const hostNoPort = host.split(":")[0];
-  const rootNoPort = rootDomain.split(":")[0];
-
   if (hostNoPort.endsWith(`.${rootNoPort}`)) {
     const subdomain = hostNoPort.slice(0, hostNoPort.length - rootNoPort.length - 1);
     if (subdomain && !subdomain.includes(".")) {
@@ -59,6 +63,28 @@ export function invalidateTenantCache(key?: string): void {
 export async function resolveStorefrontTenant(explicitSlug?: string): Promise<TenantDoc> {
   // If an explicit slug is provided (e.g. for /store/[slug] platform hosted fallback URL)
   if (explicitSlug) {
+    if (explicitSlug.startsWith("~")) {
+      const customHost = explicitSlug.slice(1).toLowerCase();
+      const customDomainsCol = await platformCollection("customDomains");
+      const verifiedDomain = await customDomainsCol.findOne({
+        hostname: customHost,
+        status: "verified",
+      });
+      if (verifiedDomain) {
+        const tenantsCol = await platformCollection("tenants");
+        const tenant = await tenantsCol.findOne({ _id: verifiedDomain.tenantId });
+        if (!tenant) throw Errors.notFound("Store not found");
+        if (tenant.status === "suspended") {
+          throw Errors.tenantUnavailable("This store has been suspended by the platform administrator");
+        }
+        if (tenant.status !== "active") {
+          throw Errors.tenantUnavailable("This store is not currently active");
+        }
+        return tenant;
+      }
+      throw Errors.notFound(`Custom domain not verified or mapped: ${customHost}`);
+    }
+
     const col = await platformCollection("tenants");
     const tenant = await col.findOne({ slug: explicitSlug.toLowerCase() });
     if (!tenant) throw Errors.notFound("Store not found");

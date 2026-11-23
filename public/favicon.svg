@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
+  <defs>
+    <linearGradient id="favBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B0F19" />
+      <stop offset="100%" stop-color="#1E1B4B" />
+    </linearGradient>
+
+    <linearGradient id="favC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="60%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+
+    <linearGradient id="favHandle" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background squircle -->
+  <rect width="32" height="32" rx="8" fill="url(#favBg)" />
+
+  <!-- Top Handle Arc -->
+  <path
+    d="M16 8 C11.8 8 9 11.2 9 15.5"
+    stroke="url(#favHandle)"
+    stroke-width="2.6"
+    stroke-linecap="round"
+  />
+
+  <!-- Bold Sovereign C Body -->
+  <path
+    d="M23 11.5 C21.2 9.2 18.2 8 15 8 C9.5 8 5.5 12 5.5 17 C5.5 22 9.5 26 15 26 C19.2 26 22.4 23.8 24 20"
+    stroke="url(#favC)"
+    stroke-width="3.2"
+    stroke-linecap="round"
+  />
+
+  <!-- Glowing Spark Core -->
+  <circle cx="19.5" cy="16.5" r="2.2" fill="#06B6D4" />
+</svg>
