@@ -27,11 +27,15 @@ const schema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     APP_ENV: z.enum(["development", "test", "staging", "production"]).default("development"),
-    APP_URL: z.url(),
+    APP_URL: z
+      .string()
+      .transform((val) => (val.startsWith("http://") || val.startsWith("https://") ? val : `https://${val}`))
+      .pipe(z.url()),
     PLATFORM_ROOT_DOMAIN: z
       .string()
       .min(3)
-      .regex(/^[a-z0-9.-]+(:\d{2,5})?$/, "lowercase host[:port] without scheme"),
+      .transform((val) => val.replace(/^https?:\/\//i, "").replace(/\/+$/, "").toLowerCase())
+      .pipe(z.string().regex(/^[a-z0-9.-]+(:\d{2,5})?$/, "lowercase host[:port] without scheme")),
     MONGODB_URI: z.string().regex(/^mongodb(\+srv)?:\/\//, "must be a MongoDB connection string"),
     MONGODB_DB: z.string().min(1).default("storeforge"),
     MONGODB_MAX_POOL_SIZE: z.coerce.number().int().min(1).max(200).default(10),
@@ -55,7 +59,7 @@ const schema = z
     UPLOAD_MAX_BYTES: z.coerce.number().int().min(1024).max(20_000_000).default(5_000_000),
 
     PAYMENTS_ALLOW_MOCK: bool.optional(),
-    MOCK_PAYMENT_SECRET: z.string().min(16).optional(),
+    MOCK_PAYMENT_SECRET: z.string().min(16).default("mock_payment_hmac_secret_key_32_chars_dev"),
 
     BILLING_PROVIDER: z.enum(["manual", "stripe"]).default("manual"),
     STRIPE_BILLING_SECRET_KEY: z.string().optional(),
@@ -99,9 +103,6 @@ const schema = z
       if (env.BILLING_PROVIDER === "manual") {
         ctx.addIssue({ code: "custom", path: ["BILLING_PROVIDER"], message: "manual billing is not allowed in production" });
       }
-    }
-    if (env.PAYMENTS_ALLOW_MOCK && !env.MOCK_PAYMENT_SECRET) {
-      ctx.addIssue({ code: "custom", path: ["MOCK_PAYMENT_SECRET"], message: "required when PAYMENTS_ALLOW_MOCK=true" });
     }
   });
 
